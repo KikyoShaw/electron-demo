@@ -1,12 +1,27 @@
 {
-  "name": "test",
+  "name": "my-electron-app",
   "version": "1.0.0",
+  "description": "My Electron ARM App",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "build": "electron-builder"
   },
-  "keywords": [],
-  "author": "shaw",
-  "license": "ISC",
-  "description": "electron test demo"
+  "build": {
+    "appId": "com.myapp.electron",
+    "productName": "MyElectronApp",
+    "target": [
+      "nsis",
+      "zip"
+    ],
+    "defaultArch": "arm64",
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^latest-version",
+    "electron-builder": "^latest-version"
+  }
 }
