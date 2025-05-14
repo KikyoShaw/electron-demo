@@ -3,6 +3,14 @@
  
 const {app, BrowserWindow, BrowserView, WebContentsView, session } = require('electron')
 const path = require('path')
+// const ffi = require('ffi-napi');
+// const ref = require('ref-napi');
+
+// const HWND = ref.types.int64;
+
+// const user32 = ffi.Library('user32', {
+//   SetParent: ['int', ['int64', 'int64']],
+// });
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
@@ -16,7 +24,7 @@ function createWindow () {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true, // enable node processes in electron app
       nodeIntegrationInWorker: true, // enable node processes in web workers
-      contextIsolation: false // separate context btw internal logic and website in webContents (make 'require' work)
+      contextIsolation: false, // separate context btw internal logic and website in webContents (make 'require' work)
     }
   })
 
@@ -24,7 +32,9 @@ function createWindow () {
 
   // win.loadURL('https://test-hd.huya.com/h5/huya-kiwi-demo-vite/test/index.html')
 
-  win.loadURL('https://www.huya.com/')
+  win.loadURL('https://www.bilibili.com/')
+
+  win.webContents.openDevTools();
  
   //win.loadFile('main.html') 
 
@@ -66,6 +76,11 @@ function createWindow () {
 //    const [width, height] = win.getSize(); // 获取窗口的新大小
 //    view.setBounds({ x: 0, y: 0, width, height }); // 设置 WebContentsView 的新大小
 //  });
+
+win.addEventListener('click', () => {
+  console.log('win clicked');
+  win.focus(); // 让窗口主动获取焦点
+});
    
   win.on('closed', () => {    
     win = null
@@ -75,8 +90,26 @@ function createWindow () {
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
-app.on('ready', ()=>{
+app.whenReady().then(() => {
+  // const args = process.argv;
+  // const hwndArg = args.find(arg => arg.startsWith('--parentHwnd='));
+  // const parentHwnd = hwndArg ? parseInt(hwndArg.split('=')[1], 10) : null;
   createWindow()
+  win.focus();
+
+  // win.once('ready-to-show', () => {
+  //   const childHwnd = win.getNativeWindowHandle().readBigInt64LE(); // 获取 Electron 窗口句柄
+  //   if (parentHwnd) {
+  //     user32.SetParent(childHwnd, BigInt(parentHwnd));
+  //   }
+  // });
+
+});
+
+
+app.on('ready', ()=>{
+
+  //废弃
   // const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) huya-pc exe/8.0.0.0 Chrome/126.0.6478.234 WebView2/31.7.6 Safari/537.36"; // 你想设置的全局 UA
   // session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
   //     details.requestHeaders['User-Agent'] = userAgent;
